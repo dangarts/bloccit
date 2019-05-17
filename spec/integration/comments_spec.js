@@ -144,7 +144,7 @@ describe("routes : comments", () => {
   // SIGNED IN USER
   describe("signed in user performing CRUD actions for Comment", () => {
 
-    beforeEach((done) => {    // before each suite in this context
+    beforeEach((done) => {
       request.get({           // mock authentication
         url: "http://localhost:3000/auth/fake",
         form: {
@@ -158,7 +158,6 @@ describe("routes : comments", () => {
       );
     });
 
-// #2
     describe("POST /topics/:topicId/posts/:postId/comments/create", () => {
 
       it("should create a new comment and redirect", (done) => {
@@ -186,7 +185,7 @@ describe("routes : comments", () => {
       });
     });
 
-// #3
+    // Deleting associated comments
     describe("POST /topics/:topicId/posts/:postId/comments/:id/destroy", () => {
 
       it("should delete the comment with the associated ID", (done) => {
@@ -214,7 +213,106 @@ describe("routes : comments", () => {
 
     });
 
-  }); //end context for signed in user
+    // Deleting unassociated comments
+    describe("POST /topics/:topicId/posts/:postId/comments/:id/destroy", () => {
+
+
+      beforeEach((done) => {
+        User.create({
+          email: "test@test.com",
+          password: "testpassword",
+          role: "member"
+        })
+        .then((user) => {
+        request.get({
+          url: "http://localhost:3000/auth/fake",
+          form: {
+              role: user.role,     
+              userId: user.id,
+              email: user.email
+          }
+        },
+        (err, res, body) => {
+          done();
+            }
+          );
+        });
+      });
+
+
+      it("should delete the comment with the associated ID", (done) => {
+        Comment.all()
+        .then((comments) => {
+          const commentCountBeforeDelete = comments.length;
+
+          expect(commentCountBeforeDelete).toBe(1);
+
+          request.post(
+           `${base}${this.topic.id}/posts/${this.post.id}/comments/${this.comment.id}/destroy`,
+            (err, res, body) => {
+            expect(res.statusCode).toBe(401);
+            Comment.all()
+            .then((comments) => {
+              expect(err).toBeNull();
+              expect(comments.length).toBe(commentCountBeforeDelete);
+              done();
+            })
+          });
+        })
+      });
+    });
+
+  });
+
+
+  // SIGNED IN ADMIN
+  describe("signed in ADMIN performing CRUD actions for Comments",() => {
+
+    beforeEach((done) => {    // before each suite in this context
+      request.get({           // mock authentication
+        url: "http://localhost:3000/auth/fake",
+        form: {
+          role: "admin",     // mock authenticate as member user
+          userId: this.user.id
+        }
+      },
+        (err, res, body) => {
+          done();
+        }
+      );
+    });
+
+    // ADMIN deleting comment 
+    describe("POST /topics/:topicId/posts/:postId/comments/:id/destroy", () => {
+
+      it("should delete the comment with the associated ID", (done) => {
+        Comment.all()
+        .then((comments) => {
+          const commentCountBeforeDelete = comments.length;
+
+          expect(commentCountBeforeDelete).toBe(1);
+
+          request.post(
+           `${base}${this.topic.id}/posts/${this.post.id}/comments/${this.comment.id}/destroy`,
+            (err, res, body) => {
+            expect(res.statusCode).toBe(302);
+            Comment.all()
+            .then((comments) => {
+              expect(err).toBeNull();
+              expect(comments.length).toBe(commentCountBeforeDelete - 1);
+              done();
+            })
+
+          });
+        })
+
+      });
+
+    });
+    
+
+
+  });
 
 
 });
