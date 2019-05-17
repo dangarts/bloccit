@@ -14,30 +14,34 @@
       <h1><%= topic.title %></h1>
 
       
+      <div class="mb-3">
+        <% if(currentUser && currentUser.isAdmin()) { %>
 
-
-
-      <% if(currentUser) { %>
-        <a href="/topics/<%= topic.id %>/posts/new" class="btn btn-success">New Post</a>
-
-
-        <% if(currentUser.isAdmin()) { %>
-          <a href="/topics/<%= topic.id %>/edit" class="btn btn-warning">Edit</a>
-          <form style="display:initial" action="/topics/<%= topic.id %>/destroy" method="post">
-            <button type="submit" class="btn btn-danger">Delete</button>
-          </form>
-
+            <a href="/topics/<%= topic.id %>/edit" class="btn btn-warning">Edit topic</a>
+            <form style="display:initial" action="/topics/<%= topic.id %>/destroy" method="post">
+              <button type="submit" class="btn btn-danger">Delete topic</button>
+            </form>
+        
         <% } %>
+      </div>
 
-      <% } %>
+
+      
 
 
       <p><%= topic.description %></p>
 
       <hr>
 
-      <h1>Posts</h1>
-   
+      <h1  class="mt-3">Posts</h1>
+
+      <div class="mb-3">
+      <% if(currentUser) { %>
+        <a href="/topics/<%= topic.id %>/posts/new" class="btn btn-success">New Post</a>
+      <% } %>
+    </div>
+
+
       <ul class="list-group">
         <% topic.posts.forEach((post) => { %>
           <li class="list-group-item">

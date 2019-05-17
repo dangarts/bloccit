@@ -1,23 +1,28 @@
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+<nav class="navbar navbar-expand-sm navbar-dark bg-dark fixed-top">
   <div class="container">
     <a class="navbar-brand" href="/">Bloccit</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
-    <div class="collapse navbar-collapse" id="navbarResponsive">
+    <div class="collapse navbar-collapse" id="navbarResponsive" style="font-size: .8em;">
       <ul class="navbar-nav ml-auto">
         <li class="nav-item">
           <a class="nav-link" href="/topics">Topics</a>
         </li>
-        <li class="nav-item">
+        <!-- <li class="nav-item">
             <a class="nav-link" href="/">Home</a>
-        </li>
+        </li> -->
 
 <!-- #1 -->
 <% if(currentUser) { %>
+
+  
   <li class="nav-item">
     <a class="nav-link" href="/users/sign_out">Sign out</a>
   </li>
+  <li class="nav-item">
+    <a class="nav-link" href="#"><%- currentUser.email %> (<%- currentUser.role %>)</a>
+</li>
 <% } else { %>
 <!-- #2 -->
   <li class="nav-item">
