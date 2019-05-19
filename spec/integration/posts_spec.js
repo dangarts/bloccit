@@ -64,6 +64,7 @@ describe("routes : posts", () => {
       it("should not render a new post form", (done) => {
        request.get(`${base}/${this.topic.id}/posts/new`, (err, res, body) => {
          expect(body).toContain("Winter Games"); //redirects to topic index
+         console.log(request.get(res.locals.flash));
          done();
         });
       });

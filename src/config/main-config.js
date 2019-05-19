@@ -25,7 +25,7 @@ module.exports = {
     app.use((req,res,next) => {
       res.locals.currentUser = req.user;
       next();
-    })
+    });
     app.use(express.static(path.join(__dirname, "..", "assets")));
   }
 };

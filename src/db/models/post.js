@@ -38,9 +38,7 @@ module.exports = (sequelize, DataTypes) => {
     
   };
 
-  Post.prototype.isAdmin = function() {
-    return this.role === "admin";
-  };
+
 
   return Post;
 };
