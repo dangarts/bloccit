@@ -1,4 +1,3 @@
-// #1
 const sequelize = require("../../src/db/models/index").sequelize;
 const Topic = require("../../src/db/models").Topic;
 const Post = require("../../src/db/models").Post;
@@ -9,13 +8,11 @@ const Vote = require("../../src/db/models").Vote;
 describe("Vote", () => {
 
   beforeEach((done) => {
- // #2
     this.user;
     this.topic;
     this.post;
     this.vote;
 
- // #3
     sequelize.sync({force: true}).then((res) => {
 
       User.create({
@@ -65,8 +62,7 @@ describe("Vote", () => {
     });
   });
 
-  //suits will begin here
-  // Define a suite for the create action.
+  //Define a suite for the create method.
   describe("#create()", () => {
 
     // Write a test to check that we successfully create an upvote.
@@ -136,7 +132,31 @@ describe("Vote", () => {
       })
     });
 
-  });
+    // 1. ASSIGNMENT: Create a vote with a value of anything other than 1 or -1.
+    it("Should not allow the vote value to be anything other then 1 or -1", (done) => {
+
+      Vote.create({
+        value: 0,
+        postId: this.post.id,
+        userId: this.user.id
+      })
+      .then((vote) => {
+        //expect(vote.value).toBe(2);
+        done();
+
+      })
+      .catch((err) => {
+        expect(err.message).toContain("Validation isIn on value failed");
+        done();
+      });
+    });
+
+
+
+
+
+  });//end
+
 
   //Define a suite for the setUser method.
   describe("#setUser()", () => {
@@ -175,6 +195,7 @@ describe("Vote", () => {
 
   });
 
+
   //Define a suite for the getUser method.
   describe("#getUser()", () => {
 
@@ -198,6 +219,7 @@ describe("Vote", () => {
     });
 
   });
+
 
   // Define a suite for the setPost method.
   describe("#setPost()", () => {
@@ -239,6 +261,7 @@ describe("Vote", () => {
 
   });
 
+
   // Define a suite for the getPost method.
   describe("#getPost()", () => {
 
@@ -264,5 +287,65 @@ describe("Vote", () => {
   });
 
 
+  // Define a suite for the getPoints method of the post model.
+  describe("#getPoints", () => {
+
+    it("should return 1, the total points for the current post", (done) => {
+        Vote.create({
+          value: 1,
+          userId: this.user.id,
+          postId: this.post.id
+        })
+        .then((vote) => {
+          //console.log([vote]);
+          this.post.votes = [vote];
+          this.vote = this.post.votes[0];
+          expect(this.post.getPoints()).toBe(1);
+          done();
+      })
+      .catch((err) => {
+        console.log(err);
+        done();
+      });
+    });
+  });
+
+
+  // Define a suite for the hasUpvoteFor method of the post model.
+  describe("#hasUpvoteFor()", () => {
+    it("should return true if the user with the matching userId has an upvote for the post", (done) => {
+
+      Vote.create({
+        value: 1,
+        userId: this.user.id,
+        postId: this.post.id 
+      })
+      .then((vote) => {
+        this.post.votes = [vote];
+        this.vote = this.post.votes[0];
+        expect(this.post.hasUpvoteFor()).toBe(true);
+        done();
+      })
+    })
+  });
+
+
+  // Define a suite for the hasDownvoteFor method of the post model.
+  describe("#hasDownvoteFor()", () => {
+      it("should return true if the user with the matching userId has a downvote for the post", (done) => {
+
+      Vote.create({
+        value: -1,
+        userId: this.user.id,
+        postId: this.post.id 
+      })
+      .then((vote) => {
+        this.post.votes = [vote];
+        this.vote = this.post.votes[0];
+        expect(this.post.hasDownvoteFor()).toBe(true);
+        done();
+      })
+    })
+  });
 
 });

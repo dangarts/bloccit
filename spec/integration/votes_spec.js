@@ -1,9 +1,6 @@
-// Load the required dependencies for our tests.
-
 const request = require("request");
 const server = require("../../src/server");
 const base = "http://localhost:3000/topics/";
-
 const sequelize = require("../../src/db/models/index").sequelize;
 const Topic = require("../../src/db/models").Topic;
 const Post = require("../../src/db/models").Post;
@@ -148,7 +145,39 @@ describe("routes : votes", () => {
           }
         );
       });
+
+
+      // 2. ASSIGNMENT: Create more than one vote per user for a given post.
+      it("should NOT Create more than one vote per user for a given post.", (done) => {
+        const options = {
+          url: `${base}${this.topic.id}/posts/${this.post.id}/votes/upvote`
+        };
+        request.get(options,
+          (err, res, body) => {
+            Vote.findOne({          
+              where: {
+                userId: this.user.id,
+                postId: this.post.id
+              }
+            })
+            .then((vote) => {               
+              expect(vote).not.toBeNull();
+              expect(vote.value).toBe(1);// confirm that an upvote is still 1 after the second request
+              expect(vote.userId).toBe(this.user.id);
+              expect(vote.postId).toBe(this.post.id);
+              done();
+            })
+            .catch((err) => {
+              console.log(err);
+              done();
+            });
+          });
+      });
+
+
     });
+
+    
 
     describe("GET /topics/:topicId/posts/:postId/votes/downvote", () => {
 

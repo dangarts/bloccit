@@ -40,22 +40,25 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: "postId",
       as: "votes"
     });
-    
   };
 
-
-
-
+  // Adds up points. Check if the post has votes. If not, return 0.
   Post.prototype.getPoints = function(){
+    if(this.votes.length === 0) return 0 
+    return this.votes // array of Vote objects
+      .map((v) => { return v.value }) // creates an array of values
+      .reduce((prev, next) => { return prev + next }); // adds all the values
+  };
 
-    // #1We check to see if the post has any votes. If not, we return 0.
-        if(this.votes.length === 0) return 0
-   
-    // #2If a post has votes, then we get a count of all values, add them and return the result. The map function transforms the array. this.votes is an array of Vote objects. map turns it into an array of values. The reduce function goes over all values, reducing them until one is left, the total.
-        return this.votes
-          .map((v) => { return v.value })
-          .reduce((prev, next) => { return prev + next });
-      };
+  // returns true if user has an upvote for the post
+  Post.prototype.hasUpvoteFor = function(userId){
+    return this.votes[0].value == 1;
+  };
+
+   // returns true if user has an downvote for the post
+  Post.prototype.hasDownvoteFor = function(userId){
+    return this.votes[0].value == -1;
+  };
 
   return Post;
 };
