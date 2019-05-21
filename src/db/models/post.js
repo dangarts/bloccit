@@ -36,6 +36,18 @@ module.exports = (sequelize, DataTypes) => {
       as: "comments"
     });
 
+    Post.hasMany(models.Favorite, {
+      foreignKey: "postId",
+      as: "favorites"
+    });
+
+    Post.afterCreate((post, callback) => {
+      return models.Favorite.create({
+        userId: post.userId,
+        postId: post.id
+      });
+    });
+
     Post.hasMany(models.Vote, {
       foreignKey: "postId",
       as: "votes"
@@ -58,6 +70,10 @@ module.exports = (sequelize, DataTypes) => {
    // returns true if user has an downvote for the post
   Post.prototype.hasDownvoteFor = function(userId){
     return this.votes[0].value == -1;
+  };
+
+  Post.prototype.getFavoriteFor = function(userId){
+    return this.favorites.find((favorite) => { return favorite.userId == userId });
   };
 
   return Post;

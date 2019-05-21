@@ -17,16 +17,6 @@
         <h1><%= post.title %></h1>
       </div>
 
-
-
-
-
-
-
-     
-
-
-
       <% if(currentUser) { %>
       <% if((currentUser.id == post.userId) || currentUser.isAdmin()) { %>
 
@@ -45,6 +35,11 @@
 
     <% } }%>
 
+
+    
+    <% if(currentUser) { %>
+      <% include ../favorites/favoriting.ejs %>
+    <% } %>
 
       <p><%= post.body %></p>
 
