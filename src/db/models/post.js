@@ -48,6 +48,15 @@ module.exports = (sequelize, DataTypes) => {
       });
     });
 
+    //Assignment create upvote automatically after post creation
+    Post.afterCreate((post, callback) => {
+      return models.Vote.create({
+        userId: post.userId,
+        postId: post.id,
+        value: 1
+      });
+    });
+
     Post.hasMany(models.Vote, {
       foreignKey: "postId",
       as: "votes"
