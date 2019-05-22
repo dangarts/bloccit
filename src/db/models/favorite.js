@@ -30,7 +30,7 @@ module.exports = (sequelize, DataTypes) => {
             }],
             where: { userId: userId},
      
-            limit: 5,
+            //limit: 5,
             order: [["createdAt", "DESC"]]
           }
         });
