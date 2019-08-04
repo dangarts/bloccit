@@ -21,7 +21,7 @@ This is a personal project to understand the relationship of Node, Postgres, Seq
 
 ## Screenshots
 
-![Project Screenshot](./readme-screenshot.png)
+![Project Screenshot](./readme-screenshot.jpg)
 
 ## Technologies
 
